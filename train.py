@@ -1,8 +1,4 @@
 # encoding:utf-8
-"""
-DSSM式：history这边独立输出一个vec，response也独立输出一个vec，然后直接算点积(cos)
-区别于论文里要算history中每个text和response的相关性的做法，此方法速度更快，适用于线上。
-"""
 import os
 import time
 import json

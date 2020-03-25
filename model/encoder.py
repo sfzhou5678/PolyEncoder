@@ -3,7 +3,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from transformers import BertPreTrainedModel, BertModel, DistilBertModel
-from transformers.modeling_bert import BertEncoder, BertPooler, BertLayerNorm
 from model import dot_attention
 
 
@@ -78,8 +77,6 @@ class BertPolyDssmModel(BertPreTrainedModel):
 
     self.poly_m = kwargs['poly_m']
     self.poly_code_embeddings = nn.Embedding(self.poly_m + 1, config.hidden_size)
-    self.poly_context_fc = nn.Linear(self.vec_dim, self.vec_dim)
-    self.poly_dropout = nn.Dropout(0.5)
     try:
       self.dropout = nn.Dropout(config.hidden_dropout_prob)
       self.context_fc = nn.Linear(config.hidden_size, self.vec_dim)
@@ -107,11 +104,6 @@ class BertPolyDssmModel(BertPreTrainedModel):
     poly_code_ids += 1
     poly_code_ids = poly_code_ids.unsqueeze(0).expand(batch_size, self.poly_m)
     poly_codes = self.poly_code_embeddings(poly_code_ids)
-    # attention_weights = torch.matmul(poly_codes, state_vecs.transpose(-1, -2))
-    # attention_weights *= context_input_masks.unsqueeze(1)
-    # attention_weights = F.softmax(attention_weights, -1)
-    # attention_weights = self.dropout(attention_weights)
-    # context_vecs = torch.matmul(attention_weights, state_vecs)
     context_vecs = dot_attention(poly_codes, state_vecs, state_vecs, context_input_masks, self.dropout)
 
     ## response encoder
@@ -124,11 +116,6 @@ class BertPolyDssmModel(BertPreTrainedModel):
       state_vecs = self.bert(responses_input_ids, responses_input_masks, responses_segment_ids)[0]  # [bs, length, dim]
     poly_code_ids = torch.zeros(batch_size * res_cnt, 1, dtype=torch.long, device=context_input_ids.device)
     poly_codes = self.poly_code_embeddings(poly_code_ids)
-    # attention_weights = torch.matmul(poly_codes, state_vecs.transpose(-1, -2))
-    # attention_weights *= responses_input_masks.unsqueeze(1)
-    # attention_weights = F.softmax(attention_weights, -1)
-    # attention_weights = self.dropout(attention_weights)
-    # responses_vec = torch.matmul(attention_weights, state_vecs)
     responses_vec = dot_attention(poly_codes, state_vecs, state_vecs, responses_input_masks, self.dropout)
     responses_vec = responses_vec.view(batch_size, res_cnt, -1)
 
@@ -141,9 +128,6 @@ class BertPolyDssmModel(BertPreTrainedModel):
     ## poly final context vector aggregation
     if labels is not None:
       responses_vec = responses_vec.view(1, batch_size, -1).expand(batch_size, batch_size, self.vec_dim)
-    # attention_weights = F.softmax(torch.matmul(responses_vec, context_vecs.transpose(-1, -2)), -1)
-    # attention_weights = self.dropout(attention_weights)
-    # final_context_vec = torch.matmul(attention_weights, context_vecs)
     final_context_vec = dot_attention(responses_vec, context_vecs, context_vecs, None, self.dropout)
     final_context_vec = F.normalize(final_context_vec, 2, -1)  # [bs, res_cnt, dim], res_cnt==bs when training
 

@@ -35,7 +35,7 @@ The experimental settings and results can be shown as follows:
 - **Pretrained model:** BERT-small-uncased (https://storage.googleapis.com/bert_models/2020_02_20/all_bert_models.zip )
 - **Batch size:** 32
 - **max_contexts_length**: 128
-- **max_context_cnt:**4
+- **max_context_cnt:** 4
 - **max_response_length**：64
 - **lr**: 5e-5
 - **Epochs**: 3

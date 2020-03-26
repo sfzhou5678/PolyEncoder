@@ -43,9 +43,9 @@ The experimental settings and results can be shown as follows:
 |       Model       | **R@1/10** | **Training Speed** | **GPU Mem Consumption** |
 | :---------------: | :--------: | :----------------: | :---------------------: |
 |    Bi-encoder     |   0.6714   |      3.15it/s      |        1969  Mb         |
-| Poly-encoder  16  |   0.6938   |      3.11it/s      |         1975Mb          |
-| Poly-encoder  64  |            |      3.08it/s      |         2005Mb          |
-| Poly-encoder  360 |            |                    |                         |
+| Poly-encoder  16  |   0.6938   |      3.11it/s      |         1975 Mb         |
+| Poly-encoder  64  |   0.7026   |      3.08it/s      |         2005 Mb         |
+| Poly-encoder  360 |   0.7066   |      3.05it/s      |         2071 Mb         |
 
 
 

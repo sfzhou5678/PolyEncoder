@@ -49,3 +49,7 @@ The experimental settings and results are shown as follows:
 
 Different with the original paper, this experiment uses a **bert-small-uncased** model (from https://github.com/sfzhou5678/PretrainedLittleBERTs or https://storage.googleapis.com/bert_models/2020_02_20/all_bert_models.zip) rather than the **bert-base**. Besides, this experiment only uses **batch_size =32, max_length = 128, and max_history=4** (which means select up to 4 context texts). All these settings lead to lower results but faster training speed. One can modify these settings for a better result.
 
+## Some Improvements
+- Thanks to [@chijames](https://github.com/chijames), this [implementation](https://github.com/chijames/Poly-Encoder) is closer to the original paper and has achieved better performance. 
+
+BTW, If you have any suggestions or questions, please feel free to reach me out!

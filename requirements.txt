@@ -1,5 +1,5 @@
 tqdm
 numpy
-transformers==2.5.1
+transformers==4.30.0
 torch==1.4.0
 
